@@ -1,11 +1,12 @@
 import React from 'react';
+import ButtonDelete from './ButtonDelete';
+import ButtonUpdate from './ButtonUpdate';
 import { useDebouncedCallback } from 'use-debounce';
-import type { Todo } from '~/types/todo';
 import { api } from '~/utils/api';
 import { Checkbox } from '~/components/ui/checkbox';
 import { Label } from '~/components/ui/label';
 import { TableCell, TableRow } from "~/components/ui/table"
-import ButtonDelete from './ButtonDelete';
+import type { Todo } from '~/types/todo';
 
 type TodoCardProps = {
     todo: Todo;
@@ -42,7 +43,8 @@ export default function TodoCard(props: TodoCardProps) {
                         onCheckedChange={(checked) => debouncedToggleStatus(props.todo.id!, checked as boolean)}
                     />
                 </Label>
-                <ButtonDelete />
+                <ButtonUpdate />
+                <ButtonDelete todoID={props.todo.id!} />
             </TableCell>
         </TableRow>
     )

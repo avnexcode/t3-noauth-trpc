@@ -15,11 +15,6 @@ export const todoSchema = z.object({
         .optional(),
 })
 
-export const todoInputSchema = z.string()
-    .min(1, 'Todo tidak boleh kosong')
-    .min(3, 'Todo minimal 3 huruf')
-    .max(100, 'Todo maksimal 100 huruf')
-
 export const todoToggleSchema = z.object({
     id: z.string(),
     status: z.boolean()

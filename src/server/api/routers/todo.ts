@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { todoSchema, todoToggleSchema } from "~/types/todo";
 
@@ -22,6 +23,15 @@ export const todoRouter = createTRPCRouter({
             data: {
                 status: input.status
 
+            }
+        })
+        return todo
+    }),
+
+    delete: publicProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+        const todo = await ctx.db.todo.delete({
+            where: {
+                id: input
             }
         })
         return todo

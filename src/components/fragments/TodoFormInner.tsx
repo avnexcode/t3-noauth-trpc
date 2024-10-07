@@ -11,6 +11,7 @@ type TodoFormInnerProps = {
 
 export default function TodoFormInner(props: TodoFormInnerProps) {
     const { form, onSubmit } = props
+    
     return (
         <Form {...form}>
             <form action="" className='flex flex-col gap-5' onSubmit={form.handleSubmit(onSubmit)} id='todo-form'>

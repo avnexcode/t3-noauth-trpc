@@ -10,8 +10,24 @@ import {
 } from "~/components/ui/dialog";
 import { Button } from '../ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { api } from '~/utils/api';
+import { toast } from '~/hooks/use-toast';
 
-export default function ButtonDelete() {
+type ButtonDeleteProps = {
+    todoID: string
+}
+
+export default function ButtonDelete(props: ButtonDeleteProps) {
+    const { refetch: todoRefetch } = api.todo.getAll.useQuery()
+    const { mutate: deleteTodo, isPending: todoPending } = api.todo.delete.useMutation({
+        onSettled: async () => {
+            await todoRefetch()
+            toast({
+                title: 'Success',
+                description: 'Success Deleted Todo',
+            })
+        }
+    })
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -31,8 +47,8 @@ export default function ButtonDelete() {
                             Close
                         </Button>
                     </DialogClose>
-                    <Button variant="destructive" size="sm" className="ml-2">
-                        Confirm
+                    <Button variant="destructive" size="sm" className="ml-2" onClick={() => { deleteTodo(props.todoID) }} disabled={todoPending}>
+                        {todoPending ? 'Deleting...' : 'Confirm'}
                     </Button>
                 </DialogFooter>
             </DialogContent>

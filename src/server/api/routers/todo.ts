@@ -8,10 +8,25 @@ export const todoRouter = createTRPCRouter({
         return await ctx.db.todo.findMany()
     }),
 
+    getOne: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+        const todo = await ctx.db.todo.findUnique({ where: { id: input } })
+        return todo
+    }),
+
     create: publicProcedure.input(todoSchema).mutation(async ({ ctx, input }) => {
         const todo = await ctx.db.todo.create({
             data: {
-                text: input.text
+                text: input.text.toLowerCase()
+            }
+        })
+        return todo
+    }),
+
+    update: publicProcedure.input(todoSchema).mutation(async ({ ctx, input }) => {
+        const todo = await ctx.db.todo.update({
+            where: { id: input.id }, 
+            data: {
+                text: input.text.toLowerCase()
             }
         })
         return todo

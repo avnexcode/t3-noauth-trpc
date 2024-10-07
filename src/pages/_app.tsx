@@ -5,10 +5,12 @@ import { Toaster } from "~/components/ui/toaster"
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import Navbar from "~/components/elements/Navbar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <div className={GeistSans.className}>
+      <Navbar />
       <Component {...pageProps} />
       <Toaster />
     </div>

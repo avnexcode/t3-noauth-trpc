@@ -43,7 +43,7 @@ export default function TodoCard(props: TodoCardProps) {
                         onCheckedChange={(checked) => debouncedToggleStatus(props.todo.id!, checked as boolean)}
                     />
                 </Label>
-                <ButtonUpdate />
+                <ButtonUpdate todoID={props.todo.id!} />
                 <ButtonDelete todoID={props.todo.id!} />
             </TableCell>
         </TableRow>

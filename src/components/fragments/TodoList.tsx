@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import TodoCard from '../elements/TodoCard'
 import { api } from '~/utils/api'
 import type { Todo } from '~/types/todo'
@@ -11,12 +11,21 @@ import {
     TableHeader,
     TableRow,
 } from "~/components/ui/table"
+import { useTodoStore } from '~/store/todo'
 
 const renderElement = (todos: Todo[]) => todos.map(todo => <TodoCard key={todo.id} todo={todo} />)
 
 export default function TodoList() {
 
+    const { setTodoLength } = useTodoStore()
+
     const { data: todoData, isLoading } = api.todo.getAll.useQuery()
+
+    useEffect(() => {
+        if (todoData) {
+            setTodoLength(todoData.length)
+        }
+    }, [todoData, setTodoLength])
 
     return (
         <Table>

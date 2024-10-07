@@ -7,7 +7,6 @@ import { Label } from '~/components/ui/label';
 import { TableCell, TableRow } from "~/components/ui/table"
 import ButtonDelete from './ButtonDelete';
 
-
 type TodoCardProps = {
     todo: Todo;
 };

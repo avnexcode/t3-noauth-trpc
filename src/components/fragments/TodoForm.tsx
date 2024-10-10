@@ -12,10 +12,11 @@ import { useTodoStore } from '~/store/todo'
 
 export default function TodoForm() {
     const { refetch: todoRefetch } = api.todo.getAll.useQuery()
-    const { mutate: createTodo, isPending: todoCreatePending } = api.todo.create.useMutation({
+    const { mutate: createTodo, isPending: todoCreatePending, variables: todoVariables } = api.todo.create.useMutation({
         onSettled: async () => {
             await todoRefetch()
             form.reset()
+            setTodoData(null!)
             toast({
                 title: "Success",
                 description: `Success Create New Todo at ${Date.now()}`,
@@ -42,7 +43,7 @@ export default function TodoForm() {
         resolver: zodResolver(todoSchema)
     })
 
-    const { todoID, setTodoID } = useTodoStore()
+    const { todoID, setTodoID, setTodoData } = useTodoStore()
     const { data: todo } = api.todo.getOne.useQuery(todoID)
 
     useEffect(() => {
@@ -53,12 +54,13 @@ export default function TodoForm() {
 
     const onSubmit = (values: Todo) => {
         if (!todoID) {
+            setTodoData(todoVariables!)
             createTodo(values);
         } else {
             updateTodo({ id: todoID, text: values.text });
         }
     };
-
+       
     return (
         <Card>
             <CardHeader>
@@ -70,7 +72,11 @@ export default function TodoForm() {
             </CardContent>
             <CardFooter className='flex justify-end'>
                 {todoID ?
-                    <Button variant={'default'} size={'sm'} type='submit' form='todo-form' disabled={todoUpdatePending} className='disabled:bg-slate-500'>{todoUpdatePending ? 'Updating...' : 'Update'}</Button> :
+                    <div className='flex gap-3'>
+                        <Button variant={'default'} size={'sm'} type='submit' form='todo-form' disabled={todoUpdatePending} className='disabled:bg-slate-500'>{todoUpdatePending ? 'Updating...' : 'Update'}</Button>
+                        <Button variant={'default'} size={'sm'} type='submit' form='todo-form' disabled={todoUpdatePending} className='disabled:bg-slate-500' onClick={() => { setTodoID(''); form.setValue('text', '') }}>Cancel</Button>
+                    </div>
+                    :
                     <Button variant={'default'} size={'sm'} type='submit' form='todo-form' disabled={todoCreatePending} className='disabled:bg-slate-500'>{todoCreatePending ? 'Sending...' : 'Post'}</Button>
                 }
             </CardFooter>

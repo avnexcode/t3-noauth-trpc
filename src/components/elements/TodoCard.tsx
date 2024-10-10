@@ -7,6 +7,7 @@ import { Checkbox } from '~/components/ui/checkbox';
 import { Label } from '~/components/ui/label';
 import { TableCell, TableRow } from "~/components/ui/table"
 import type { Todo } from '~/types/todo';
+import { useTodoStore } from '~/store/todo';
 
 type TodoCardProps = {
     todo: Todo;
@@ -14,6 +15,8 @@ type TodoCardProps = {
 
 export default function TodoCard(props: TodoCardProps) {
     const { refetch: todoRefetch } = api.todo.getAll.useQuery();
+
+    const { todoID } = useTodoStore()
 
     const { mutate: toggleTodoStatus, isPending: todoPending } = api.todo.toggle.useMutation({
         onSettled: async () => {
@@ -43,7 +46,7 @@ export default function TodoCard(props: TodoCardProps) {
                         onCheckedChange={(checked) => debouncedToggleStatus(props.todo.id!, checked as boolean)}
                     />
                 </Label>
-                <ButtonUpdate todoID={props.todo.id!} />
+                <ButtonUpdate todoID={props.todo.id!} btnDisable={todoID === props.todo.id} />
                 <ButtonDelete todoID={props.todo.id!} />
             </TableCell>
         </TableRow>

@@ -17,7 +17,7 @@ const renderElement = (todos: Todo[]) => todos.map(todo => <TodoCard key={todo.i
 
 export default function TodoList() {
 
-    const { setTodoLength } = useTodoStore()
+    const { setTodoLength, todoData: globalTodoData } = useTodoStore()
 
     const { data: todoData, isLoading } = api.todo.getAll.useQuery()
 
@@ -49,6 +49,9 @@ export default function TodoList() {
                         <TableCell colSpan={4} className="text-center">No todos available.</TableCell>
                     </TableRow>
                 )}
+                {
+                    globalTodoData ? <TodoCard key={globalTodoData.id} todo={globalTodoData} /> : null
+                }
             </TableBody>
         </Table>
     )

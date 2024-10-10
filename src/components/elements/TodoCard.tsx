@@ -11,6 +11,7 @@ import { useTodoStore } from '~/store/todo';
 
 type TodoCardProps = {
     todo: Todo;
+    className?: string
 };
 
 export default function TodoCard(props: TodoCardProps) {
@@ -32,7 +33,7 @@ export default function TodoCard(props: TodoCardProps) {
     );
 
     return (
-        <TableRow>
+        <TableRow className={`${props.className}`}>
             <TableCell className='capitalize'>{props.todo.text}</TableCell>
             <TableCell>
                 {todoPending ? <span>loading...</span> : <span>{props.todo.status ? 'Done' : 'On Going'}</span>}

@@ -21,7 +21,8 @@ export const useTodoStore = create<TodoStore>((set) => {
             return { todoID }
         }),
         todoData: null,
-        setTodoData: todoData => set(() => {
+        setTodoData: (todoData) => set(() => {
+            console.log(todoData)
             return { todoData }
         })
 

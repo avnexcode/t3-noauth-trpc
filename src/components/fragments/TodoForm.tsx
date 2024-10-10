@@ -11,30 +11,8 @@ import type { Todo } from '~/types/todo'
 import { useTodoStore } from '~/store/todo'
 
 export default function TodoForm() {
-    const { refetch: todoRefetch } = api.todo.getAll.useQuery()
-    const { mutate: createTodo, isPending: todoCreatePending, variables: todoVariables } = api.todo.create.useMutation({
-        onSettled: async () => {
-            await todoRefetch()
-            form.reset()
-            setTodoData(null!)
-            toast({
-                title: "Success",
-                description: `Success Create New Todo at ${Date.now()}`,
-            })
-        }
-    })
 
-    const { mutate: updateTodo, isPending: todoUpdatePending } = api.todo.update.useMutation({
-        onSettled: async () => {
-            await todoRefetch()
-            setTodoID('')
-            form.reset()
-            toast({
-                title: "Success",
-                description: `Success Update Todo at ${Date.now()}`,
-            })
-        }
-    })
+    const { todoID, setTodoID, setTodoData } = useTodoStore()
 
     const form = useForm<Todo>({
         defaultValues: {
@@ -43,7 +21,61 @@ export default function TodoForm() {
         resolver: zodResolver(todoSchema)
     })
 
-    const { todoID, setTodoID, setTodoData } = useTodoStore()
+    const { refetch: todoRefetch } = api.todo.getAll.useQuery()
+
+    const { mutate: createTodo, isPending: todoCreatePending } = api.todo.create.useMutation({
+        onMutate: (todo) => {
+            if (todo) {
+                setTodoData({ text: todo.text })
+            }
+        },
+        onSuccess: () => {
+            form.reset()
+            setTodoData(null!)
+            toast({
+                title: "Success",
+                description: `Success Create New Todo at ${Date.now()}`,
+            })
+        },
+        onError: (error) => {
+            toast({
+                title: "Error",
+                description: `Failed to create todo: ${error.message}`,
+                variant: "destructive",
+            });
+        },
+        onSettled: async () => {
+            await todoRefetch()
+        }
+    })
+
+    const { mutate: updateTodo, isPending: todoUpdatePending } = api.todo.update.useMutation({
+        onMutate: (todo) => {
+            if (todo) {
+                setTodoData({ text: todo.text })
+            }
+        },
+        onSuccess: () => {
+            setTodoID('')
+            form.reset()
+            setTodoData(null!)
+            toast({
+                title: "Success",
+                description: `Success Update Todo at ${Date.now()}`,
+            })
+        },
+        onError: (error) => {
+            toast({
+                title: "Error",
+                description: `Failed to create todo: ${error.message}`,
+                variant: "destructive",
+            });
+        },
+        onSettled: async () => {
+            await todoRefetch()
+        }
+    })
+
     const { data: todo } = api.todo.getOne.useQuery(todoID)
 
     useEffect(() => {
@@ -54,13 +86,12 @@ export default function TodoForm() {
 
     const onSubmit = (values: Todo) => {
         if (!todoID) {
-            setTodoData(todoVariables!)
             createTodo(values);
         } else {
             updateTodo({ id: todoID, text: values.text });
         }
     };
-       
+
     return (
         <Card>
             <CardHeader>

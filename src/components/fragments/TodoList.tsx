@@ -50,7 +50,7 @@ export default function TodoList() {
                     </TableRow>
                 )}
                 {
-                    globalTodoData ? <TodoCard key={globalTodoData.id} todo={globalTodoData} /> : null
+                    globalTodoData ? <TodoCard key={globalTodoData.id} todo={globalTodoData} className='opacity-50'/> : null
                 }
             </TableBody>
         </Table>
